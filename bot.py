@@ -1,5 +1,9 @@
 import discord
+import os
+from dotenv import load_dotenv
 from discord.ext import commands
+
+load_dotenv()
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -10,4 +14,4 @@ bot = commands.Bot(command_prefix='/', intents=intents)
 async def list(ctx, arg):
     await ctx.send(arg)
 
-bot.run('MTQ2MTgwNTk2MjY2NTkyMjgwMg.GIlW3D.Guht9lfLd1hmCF20TP-rUpxa-kZs0pModoJDbM')
+bot.run(os.getenv("TOKEN"))
