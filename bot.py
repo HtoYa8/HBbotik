@@ -44,7 +44,7 @@ async def on_app_command_completion(interaction: discord.Interaction, command):
     channel = interaction.channel.name if interaction.channel else "DM"
 
     print(
-        f"[SLASH] {user} ({user.id}) "
+        f"[SLASH] [{time.hour}:{time.minute}:{time.second}] {user} ({user.id}) "
         f"использовал /{command.name} "
         f"| Сервер: {guild} | Канал: {channel}"
     )
