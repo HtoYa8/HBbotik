@@ -4,6 +4,7 @@ import asyncio
 import aiosqlite
 import pytz
 
+import logging
 from discord.ext import commands, tasks
 from datetime import datetime
 from dotenv import load_dotenv
@@ -21,6 +22,14 @@ intents = discord.Intents.default()
 intents.members = True
 
 bot = commands.Bot(command_prefix="/", intents=intents)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+
+logger = logging.getLogger("birthdaybot")
 
 @bot.event
 async def on_ready():
@@ -43,9 +52,8 @@ async def on_app_command_completion(interaction: discord.Interaction, command):
     guild = interaction.guild.name if interaction.guild else "DM"
     channel = interaction.channel.name if interaction.channel else "DM"
 
-    print(
-        f"[SLASH] [{time.hour}:{time.minute}:{time.second}] {user} ({user.id}) "
-        f"использовал /{command.name} "
+    logger.info(
+        f"{user} ({user.id}) использовал /{command.name} "
         f"| Сервер: {guild} | Канал: {channel}"
     )
 
