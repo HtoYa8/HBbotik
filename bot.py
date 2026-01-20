@@ -37,6 +37,18 @@ async def on_ready():
         birthday_check.start()
     print(f"✅ Бот запущен как {bot.user}")
 
+@bot.tree.on_app_command_completion
+async def on_app_command_completion(interaction: discord.Interaction, command):
+    user = interaction.user
+    guild = interaction.guild.name if interaction.guild else "DM"
+    channel = interaction.channel.name if interaction.channel else "DM"
+
+    print(
+        f"[SLASH] {user} ({user.id}) "
+        f"использовал /{command.name} "
+        f"| Сервер: {guild} | Канал: {channel}"
+    )
+
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
     print(f"❌ Ошибка команды {interaction.command.name}: {error}")
