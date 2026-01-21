@@ -4,6 +4,10 @@ from views.selects import AddBirthdaySelect, RemoveBirthdaySelect
 from db import DB_NAME
 import aiosqlite
 import logging
+from datetime import datetime
+import pytz
+from services.birthday_service import send_birthday_messages
+from permissions import is_admin
 
 logger = logging.getLogger("birthdaybot")
 
@@ -42,6 +46,35 @@ class BirthdayView(View):
             for uid, day, month in rows
         )
 
-        await interaction.response.send_message(text, ephemeral=True)
         logger.info(f"{interaction.user} просмотрел список дней рождения")
+        await interaction.response.send_message(text, ephemeral=True)
+        
+    @button(label="🎉 Запустить поздравления сейчас", style=discord.ButtonStyle.secondary)
+    async def run_now(self, interaction: discord.Interaction, _):
+        if not is_admin(interaction):
+            await interaction.response.send_message(
+                "❌ Недостаточно прав",
+                ephemeral=True
+            )
+            return
+
+        tz = pytz.timezone("Europe/Moscow")
+        now = datetime.now(tz)
+
+        success = await send_birthday_messages(
+            interaction.client,
+            DB_NAME,
+            now
+        )
+
+        if success:
+            await interaction.response.send_message(
+                "🎉 Поздравления успешно отправлены!",
+                ephemeral=True
+            )
+        else:
+            await interaction.response.send_message(
+                "❌ Некого поздравлять или не настроен канал",
+                ephemeral=True
+            )
 

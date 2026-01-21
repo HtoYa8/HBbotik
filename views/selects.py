@@ -27,4 +27,4 @@ class RemoveBirthdaySelect(View):
             f"🗑️ День рождения {user.mention} удалён",
             ephemeral=True
         )
-        logger.info(f"{interaction.user} удалил день рождения пользователя {user.id}")
+        logger.info(f"{interaction.user} удалил день рождения пользователя {user.nick}")

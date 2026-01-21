@@ -9,6 +9,7 @@ from discord.ext import commands, tasks
 from datetime import datetime
 from dotenv import load_dotenv
 from datetime import time, timezone
+from services.birthday_service import send_birthday_messages
 
 from db import init_db, DB_NAME
 
@@ -68,30 +69,10 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
 async def birthday_check():
     now = datetime.now(pytz.timezone("Europe/Moscow"))
 
-    if now.hour != 0 or now.minute != 0:
+    if now.hour != 0 or now.minute >= 3:
         return
 
-    async with aiosqlite.connect(DB_NAME) as db:
-        users = await (await db.execute(
-            "SELECT user_id FROM birthdays WHERE day=? AND month=?",
-            (now.day, now.month)
-        )).fetchall()
-
-        settings = await (await db.execute(
-            "SELECT channel_id, hb_message FROM settings"
-        )).fetchone()
-
-    if not users or not settings:
-        return
-
-    channel = bot.get_channel(settings[0])
-    if not channel:
-        return
-
-    message = settings[1] or "🎉 С днём рождения, {user}!"
-
-    for (user_id,) in users:
-        await channel.send(message.format(user=f"<@{user_id}>"))
+    await send_birthday_messages(now)
 
 async def main():
     async with bot:
