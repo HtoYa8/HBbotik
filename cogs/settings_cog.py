@@ -4,6 +4,9 @@ from discord.ext import commands
 import aiosqlite
 from db import DB_NAME
 from permissions import is_admin
+import logging
+
+logger = logging.getLogger("birthdaybot")
 
 class HBMessageModal(discord.ui.Modal):
     def __init__(self):
@@ -19,6 +22,7 @@ class HBMessageModal(discord.ui.Modal):
             )
             await db.commit()
         await interaction.response.send_message("✅ Поздравление сохранено", ephemeral=True)
+        logger.info(f"{interaction.user} установил поздравление для пользователей: {self.message_input.value}")
 
 class SettingsCog(commands.Cog):
     def __init__(self, bot):
@@ -45,6 +49,7 @@ class SettingsCog(commands.Cog):
             await db.commit()
 
         await interaction.response.send_message(f"📢 Канал установлен: {channel.mention}", ephemeral=True)
+        logger.info(f"{interaction.user} установил канал для поздравлений: {channel.mention}")
 
 
 async def setup(bot):

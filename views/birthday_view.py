@@ -3,6 +3,9 @@ from discord.ui import View, button
 from views.selects import AddBirthdaySelect, RemoveBirthdaySelect
 from db import DB_NAME
 import aiosqlite
+import logging
+
+logger = logging.getLogger("birthdaybot")
 
 class BirthdayView(View):
     def __init__(self):
@@ -40,3 +43,5 @@ class BirthdayView(View):
         )
 
         await interaction.response.send_message(text, ephemeral=True)
+        logger.info(f"{interaction.user} просмотрел список дней рождения")
+
