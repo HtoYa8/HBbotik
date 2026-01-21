@@ -72,7 +72,7 @@ async def birthday_check():
     if now.hour != 0 or now.minute >= 3:
         return
 
-    await send_birthday_messages(now)
+    await send_birthday_messages(guild_id=discord.Interaction.guild_id,date=now)
 
 async def main():
     async with bot:

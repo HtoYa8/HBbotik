@@ -64,6 +64,7 @@ class BirthdayView(View):
         success = await send_birthday_messages(
             interaction.client,
             DB_NAME,
+            interaction.guild_id,
             now
         )
 

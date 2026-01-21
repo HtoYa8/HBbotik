@@ -2,7 +2,7 @@ from datetime import datetime
 import pytz
 import aiosqlite
 
-async def send_birthday_messages(bot, db_name, date: datetime):
+async def send_birthday_messages(bot, db_name, guild_id, date: datetime):
     async with aiosqlite.connect(db_name) as db:
         users = await (await db.execute(
             "SELECT user_id FROM birthdays WHERE day=? AND month=?",
@@ -10,8 +10,11 @@ async def send_birthday_messages(bot, db_name, date: datetime):
         )).fetchall()
 
         settings = await (await db.execute(
-            "SELECT channel_id, hb_message FROM settings"
+            "SELECT channel_id, hb_message FROM settings WHERE guild_id = ?",
+            (guild_id,)
         )).fetchone()
+
+        print("SETTINGS FROM DB:", settings)
 
         if not users or not settings:
             return False

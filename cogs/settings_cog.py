@@ -17,7 +17,12 @@ class HBMessageModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         async with aiosqlite.connect(DB_NAME) as db:
             await db.execute(
-                "REPLACE INTO settings (guild_id, hb_message) VALUES (?, ?)",
+                """
+                INSERT INTO settings (guild_id, hb_message)
+                VALUES (?, ?)
+                ON CONFLICT(guild_id) DO UPDATE SET
+                    hb_message = excluded.hb_message
+                """,
                 (interaction.guild_id, self.message_input.value)
             )
             await db.commit()
@@ -43,7 +48,12 @@ class SettingsCog(commands.Cog):
 
         async with aiosqlite.connect(DB_NAME) as db:
             await db.execute(
-                "REPLACE INTO settings (guild_id, channel_id) VALUES (?, ?)",
+                """
+                INSERT INTO settings (guild_id, channel_id)
+                VALUES (?, ?)
+                ON CONFLICT(guild_id) DO UPDATE SET
+                    channel_id = excluded.channel_id
+                """,
                 (interaction.guild_id, channel.id)
             )
             await db.commit()
