@@ -2,6 +2,9 @@ import discord
 from discord.ui import Modal, TextInput
 import aiosqlite
 from db import DB_NAME
+import logging
+
+logger = logging.getLogger("birthdaybot")
 
 class AddBirthdayModal(Modal):
     def __init__(self, user_id):
@@ -30,3 +33,4 @@ class AddBirthdayModal(Modal):
             await db.commit()
 
         await interaction.response.send_message("✅ День рождения сохранён", ephemeral=True)
+        logger.info(f"{interaction.user} добавил день рождения пользователя {self.user_id}: {day}.{month}")

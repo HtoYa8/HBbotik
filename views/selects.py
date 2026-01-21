@@ -3,6 +3,9 @@ from discord.ui import View, UserSelect
 from views.modals import AddBirthdayModal
 from db import DB_NAME
 import aiosqlite
+import logging
+
+logger = logging.getLogger("birthdaybot")
 
 class AddBirthdaySelect(View):
     @discord.ui.select(cls=UserSelect, placeholder="Выберите пользователя")
@@ -24,3 +27,4 @@ class RemoveBirthdaySelect(View):
             f"🗑️ День рождения {user.mention} удалён",
             ephemeral=True
         )
+        logger.info(f"{interaction.user} удалил день рождения пользователя {user.id}")

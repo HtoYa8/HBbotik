@@ -17,7 +17,7 @@ TOKEN = os.getenv("TOKEN")
 
 if not TOKEN:
     raise RuntimeError("❌ TOKEN не найден в .env файле")
-
+    
 intents = discord.Intents.default()
 intents.members = True
 
