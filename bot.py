@@ -65,7 +65,7 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
     if not interaction.response.is_done():
         await interaction.response.send_message(f"❌ Ошибка: {error}", ephemeral=True)
 
-@tasks.loop(time=time(hour=11, minute=18, tzinfo=timezone.utc))
+@tasks.loop(time=time(hour=21, minute=0, tzinfo=timezone.utc))
 async def birthday_check():
     now = datetime.now(pytz.timezone("Europe/Moscow"))
     
