@@ -65,14 +65,21 @@ async def on_app_command_error(interaction: discord.Interaction, error: discord.
     if not interaction.response.is_done():
         await interaction.response.send_message(f"❌ Ошибка: {error}", ephemeral=True)
 
-@tasks.loop(time=time(hour=21, minute=0, tzinfo=timezone.utc))
+@tasks.loop(time=time(hour=11, minute=18, tzinfo=timezone.utc))
 async def birthday_check():
     now = datetime.now(pytz.timezone("Europe/Moscow"))
-
-    if now.hour != 0 or now.minute >= 3:
+    
+    if not bot.guilds:
         return
 
-    await send_birthday_messages(guild_id=discord.Interaction.guild_id,date=now)
+    guild = bot.guilds[0]
+
+    await send_birthday_messages(
+        bot,
+        DB_NAME,
+        guild.id,
+        now
+    )
 
 async def main():
     async with bot:

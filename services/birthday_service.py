@@ -1,6 +1,9 @@
 from datetime import datetime
 import pytz
 import aiosqlite
+import logging
+
+logger = logging.getLogger("birthdaybot")
 
 async def send_birthday_messages(bot, db_name, guild_id, date: datetime):
     async with aiosqlite.connect(db_name) as db:
@@ -14,7 +17,7 @@ async def send_birthday_messages(bot, db_name, guild_id, date: datetime):
             (guild_id,)
         )).fetchone()
 
-        print("SETTINGS FROM DB:", settings)
+        logger.info("Настройки из БД:", settings)
 
         if not users or not settings:
             return False
@@ -29,5 +32,6 @@ async def send_birthday_messages(bot, db_name, guild_id, date: datetime):
             await channel.send(
                 message.format(user=f"<@{user_id}>")
             )
+            logger.info(f"Бот поздравил пользователя {user_id}")
 
     return True
