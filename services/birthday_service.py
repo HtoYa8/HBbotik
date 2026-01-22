@@ -17,8 +17,6 @@ async def send_birthday_messages(bot, db_name, guild_id, date: datetime):
             (guild_id,)
         )).fetchone()
 
-        logger.info("Настройки из БД:", settings)
-
         if not users or not settings:
             return False
 
