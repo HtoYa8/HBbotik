@@ -58,8 +58,9 @@ class SettingsCog(commands.Cog):
             )
             await db.commit()
 
-        await interaction.response.send_message(f"📢 Канал установлен: {channel.mention}", ephemeral=True)
         logger.info(f"{interaction.user} установил канал для поздравлений: {channel.mention}")
+        await interaction.response.send_message(f"📢 Канал установлен: {channel.mention}", ephemeral=True)
+        
 
 
 async def setup(bot):
