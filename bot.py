@@ -21,6 +21,7 @@ if not TOKEN:
     
 intents = discord.Intents.default()
 intents.members = True
+intents.message_content = True
 
 bot = commands.Bot(command_prefix="/", intents=intents)
 
@@ -37,15 +38,15 @@ async def on_ready():
     await init_db()
     try:
         synced = await bot.tree.sync()
-        print(f"✅ Синхронизировано {len(synced)} команд")
+        logging.info(f"✅ Синхронизировано {len(synced)} команд")
         for cmd in synced:
             print(f"  - {cmd.name}")
     except Exception as e:
-        print(f"❌ Ошибка синхронизации команд: {e}")
+        logging.error(f"❌ Ошибка синхронизации команд: {e}")
     
     if not birthday_check.is_running():
         birthday_check.start()
-    print(f"✅ Бот запущен как {bot.user}")
+    logging.info(f"✅ Бот запущен как {bot.user}")
 
 @bot.event
 async def on_app_command_completion(interaction: discord.Interaction, command):
@@ -61,9 +62,10 @@ async def on_app_command_completion(interaction: discord.Interaction, command):
 
 @bot.tree.error
 async def on_app_command_error(interaction: discord.Interaction, error: discord.app_commands.AppCommandError):
-    print(f"❌ Ошибка команды {interaction.command.name}: {error}")
+    logging.error(f"❌ Ошибка команды {interaction.command.name}: {error}")
     if not interaction.response.is_done():
         await interaction.response.send_message(f"❌ Ошибка: {error}", ephemeral=True)
+
 
 @tasks.loop(time=time(hour=21, minute=0, tzinfo=timezone.utc))
 async def birthday_check():
@@ -85,16 +87,22 @@ async def main():
     async with bot:
         try:
             await bot.load_extension("cogs.birthday_cog")
-            print("✅ birthday_cog загружен")
+            logging.info("✅ birthday_cog загружен")
         except Exception as e:
-            print(f"❌ Ошибка загрузки birthday_cog: {e}")
+            logging.error(f"❌ Ошибка загрузки birthday_cog: {e}")
         
         try:
             await bot.load_extension("cogs.settings_cog")
-            print("✅ settings_cog загружен")
+            logging.info("✅ settings_cog загружен")
         except Exception as e:
-            print(f"❌ Ошибка загрузки settings_cog: {e}")
-        
+            logging.error(f"❌ Ошибка загрузки settings_cog: {e}")
+
+        try:
+            await bot.load_extension("cogs.media_channel_cog")
+            logging.info("✅ media_channel_cog загружен")
+        except Exception as e:
+            logging.error(f"❌ Ошибка загрузки media_channel_cog: {e}")
+
         await bot.start(TOKEN)
 
 if __name__ == "__main__":
