@@ -41,8 +41,8 @@ class SettingsCog(commands.Cog):
 
         await interaction.response.send_modal(HBMessageModal())
 
-    @app_commands.command(name="setchannel")
-    async def setchannel(self, interaction: discord.Interaction, channel: discord.TextChannel):
+    @app_commands.command(name="sethbchannel")
+    async def sethbchannel(self, interaction: discord.Interaction, channel: discord.TextChannel):
         if not is_admin(interaction):
             return await interaction.response.send_message("❌ Только администратор", ephemeral=True)
 
@@ -58,7 +58,7 @@ class SettingsCog(commands.Cog):
             )
             await db.commit()
 
-        logger.info(f"{interaction.user} установил канал для поздравлений: {channel.mention}")
+        logger.info(f"{interaction.user} установил канал для поздравлений: {channel.name}")
         await interaction.response.send_message(f"📢 Канал установлен: {channel.mention}", ephemeral=True)
         
 
